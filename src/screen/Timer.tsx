@@ -24,7 +24,7 @@ export function Timer({ timer }: { timer: TimerState }) {
         {done ? 'Tiden er ute!' : formatTime(remaining)}
       </motion.div>
       <div className="timer-bar">
-        <div className="timer-bar-fill" style={{ transform: `scaleX(${progress})` }} />
+        <div className="timer-bar-fill" style={{ width: `${progress * 100}%` }} />
       </div>
     </div>
   );

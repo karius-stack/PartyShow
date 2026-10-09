@@ -1,0 +1,485 @@
+/* Halloween: måneskinn over en gammel kirkegård. Alt er skopet til .theme-halloween. */
+
+/* ---------- Bakgrunn ---------- */
+
+.hw-bg {
+  overflow: hidden;
+}
+
+.hw-sky {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 45% at 80% 16%, rgba(126, 168, 190, 0.28), transparent 70%),
+    radial-gradient(ellipse 70% 30% at 50% 82%, rgba(120, 150, 165, 0.22), transparent 70%),
+    radial-gradient(ellipse 90% 50% at 50% 105%, rgba(255, 110, 20, 0.14), transparent 70%),
+    linear-gradient(180deg, #091520 0%, #0b1822 50%, #15242e 78%, #0d171e 100%);
+}
+
+.hw-stars {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hw-stars circle {
+  fill: #e8f1f6;
+  animation: hw-twinkle ease-in-out infinite;
+}
+
+@keyframes hw-twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+.hw-moon {
+  position: absolute;
+  top: 7vh;
+  right: 9vw;
+  width: 24vmin;
+  height: 24vmin;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 34%, rgba(160, 150, 120, 0.35) 0 7%, transparent 8%),
+    radial-gradient(circle at 62% 58%, rgba(160, 150, 120, 0.3) 0 11%, transparent 12%),
+    radial-gradient(circle at 48% 24%, rgba(160, 150, 120, 0.25) 0 4%, transparent 5%),
+    radial-gradient(circle at 70% 30%, rgba(160, 150, 120, 0.22) 0 5%, transparent 6%),
+    radial-gradient(circle at 36% 70%, rgba(160, 150, 120, 0.25) 0 6%, transparent 7%),
+    radial-gradient(circle at 38% 36%, #fffbea, #f2e6c4 55%, #cdb98a 100%);
+  box-shadow:
+    0 0 6vmin 1vmin rgba(255, 244, 214, 0.35),
+    0 0 22vmin 6vmin rgba(160, 200, 220, 0.18);
+  overflow: hidden;
+}
+
+.hw-cloud {
+  position: absolute;
+  height: 30%;
+  border-radius: 50%;
+  background: #4a5d6a;
+  filter: blur(1.6vmin);
+  opacity: 0.5;
+  animation: hw-cloud linear infinite;
+}
+
+.hw-cloud-1 {
+  top: 52%;
+  width: 140%;
+  animation-duration: 48s;
+}
+
+.hw-cloud-2 {
+  top: 18%;
+  width: 90%;
+  opacity: 0.35;
+  animation-duration: 70s;
+  animation-delay: -30s;
+}
+
+@keyframes hw-cloud {
+  from {
+    transform: translateX(-160%);
+  }
+  to {
+    transform: translateX(160%);
+  }
+}
+
+.hw-bat {
+  position: absolute;
+  left: 0;
+  width: 7vmin;
+  fill: #020406;
+  filter: drop-shadow(0 0 0.4vmin rgba(0, 0, 0, 0.6));
+}
+
+.hw-bat svg {
+  display: block;
+  width: 100%;
+}
+
+.hw-graveyard {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30vh;
+}
+
+.hw-fog {
+  position: absolute;
+  bottom: -4vh;
+  left: -50%;
+  width: 200%;
+  height: 34vh;
+  filter: blur(2vmin);
+  animation: hw-fog ease-in-out infinite alternate;
+}
+
+.hw-fog-back {
+  background:
+    radial-gradient(ellipse 18% 45% at 15% 60%, rgba(170, 196, 210, 0.16), transparent 70%),
+    radial-gradient(ellipse 22% 40% at 45% 70%, rgba(170, 196, 210, 0.12), transparent 70%),
+    radial-gradient(ellipse 20% 50% at 75% 55%, rgba(170, 196, 210, 0.15), transparent 70%);
+  animation-duration: 38s;
+}
+
+.hw-fog-front {
+  bottom: -8vh;
+  background:
+    radial-gradient(ellipse 25% 40% at 30% 70%, rgba(190, 210, 222, 0.18), transparent 70%),
+    radial-gradient(ellipse 20% 35% at 60% 80%, rgba(190, 210, 222, 0.14), transparent 70%),
+    radial-gradient(ellipse 25% 45% at 90% 70%, rgba(190, 210, 222, 0.16), transparent 70%);
+  animation-duration: 26s;
+  animation-direction: alternate-reverse;
+}
+
+@keyframes hw-fog {
+  from {
+    transform: translateX(-8%);
+  }
+  to {
+    transform: translateX(8%);
+  }
+}
+
+.hw-ember {
+  position: absolute;
+  bottom: -2vh;
+  border-radius: 50%;
+  background: #ffb347;
+  box-shadow:
+    0 0 0.6vmin 0.2vmin rgba(255, 140, 30, 0.9),
+    0 0 2vmin 0.4vmin rgba(255, 90, 0, 0.4);
+  opacity: 0;
+  animation: hw-ember linear infinite;
+}
+
+@keyframes hw-ember {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(var(--drift), -75vh);
+    opacity: 0;
+  }
+}
+
+.hw-grain {
+  position: absolute;
+  inset: -50%;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: hw-grain 0.9s steps(4) infinite;
+}
+
+@keyframes hw-grain {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-3%, 2%);
+  }
+  50% {
+    transform: translate(2%, -3%);
+  }
+  75% {
+    transform: translate(-2%, -1%);
+  }
+}
+
+.hw-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 75% 70% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.75) 100%);
+}
+
+/* ---------- Typografi ---------- */
+
+.theme-halloween .screen-title {
+  font-size: 6.4em;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #ffb24a;
+  text-shadow:
+    0 0.04em 0 #4a1503,
+    0 0 0.18em rgba(255, 140, 30, 0.75),
+    0 0 0.7em rgba(255, 80, 0, 0.4);
+  animation: hw-candle 5s ease-in-out infinite;
+}
+
+@keyframes hw-candle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  42% {
+    opacity: 1;
+  }
+  44% {
+    opacity: 0.86;
+  }
+  46% {
+    opacity: 1;
+  }
+  71% {
+    opacity: 0.93;
+  }
+  73% {
+    opacity: 1;
+  }
+}
+
+.theme-halloween .screen-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  margin-bottom: 0.3em;
+  font-weight: 600;
+  font-size: 1.5em;
+  letter-spacing: 0.4em;
+  color: var(--muted);
+}
+
+.theme-halloween .screen-kicker::before,
+.theme-halloween .screen-kicker::after {
+  content: '';
+  width: 4em;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(239, 230, 210, 0.6));
+}
+
+.theme-halloween .screen-kicker::after {
+  transform: scaleX(-1);
+}
+
+.theme-halloween .screen-subtitle {
+  font-style: italic;
+  font-size: 2.2em;
+  color: var(--muted);
+  animation: hw-breathe 3.5s ease-in-out infinite;
+}
+
+@keyframes hw-breathe {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* ---------- Lobby ---------- */
+
+.theme-halloween .lobby {
+  justify-content: flex-start;
+  height: 100%;
+  padding-top: 4vh;
+}
+
+.theme-halloween .team-grid {
+  flex: 1;
+  align-content: flex-end;
+  gap: 2.5em 3.5em;
+  max-width: 85vw;
+  padding-bottom: 7vh;
+}
+
+.theme-halloween .team-card {
+  width: 11em;
+}
+
+.theme-halloween .team-avatar {
+  width: 10em;
+  height: 10.8em;
+}
+
+.theme-halloween .team-name {
+  position: relative;
+  margin-top: 0.5em;
+  padding: 0.2em 0.9em 0.3em;
+  font-size: 1.7em;
+  font-weight: 600;
+  color: var(--fg);
+  background: linear-gradient(180deg, rgba(28, 38, 46, 0.92), rgba(12, 18, 24, 0.92));
+  border: 1px solid rgba(239, 230, 210, 0.18);
+  border-radius: 0.6em 0.6em 0.2em 0.2em;
+  box-shadow:
+    0 0.3em 0.8em rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
+}
+
+/* ---------- Spill ---------- */
+
+.theme-halloween .game {
+  justify-content: center;
+  height: 100%;
+}
+
+.theme-halloween .game .screen-title {
+  font-size: 5.6em;
+  margin-bottom: 0.2em;
+}
+
+.theme-halloween .game-description {
+  max-width: 42em;
+  margin: 0 0 0.6em;
+  font-size: 2em;
+  line-height: 1.35;
+  color: var(--fg);
+  text-shadow: 0 0.1em 0.4em rgba(0, 0, 0, 0.9);
+}
+
+.theme-halloween .game-media img,
+.theme-halloween .game-media video {
+  max-height: 30vh;
+  border: 0.35em solid #120c08;
+  border-radius: 0.3em;
+  outline: 1px solid rgba(239, 230, 210, 0.35);
+  outline-offset: 0.35em;
+  box-shadow:
+    0 1.5em 3em rgba(0, 0, 0, 0.8),
+    0 0 3em rgba(255, 120, 20, 0.15);
+  transform: rotate(-1deg);
+}
+
+.theme-halloween .timer-value {
+  font-size: 6.2em;
+  line-height: 1.1;
+  font-weight: 800;
+  color: var(--fg);
+  text-shadow:
+    0 0 0.15em rgba(255, 170, 70, 0.6),
+    0 0.05em 0 #3b1a05;
+}
+
+.theme-halloween .timer-bar {
+  position: relative;
+  width: 34em;
+  height: 0.35em;
+  overflow: visible;
+  background: rgba(239, 230, 210, 0.12);
+}
+
+/* Lunta brenner ned – gløden sitter i enden. */
+.theme-halloween .timer-bar-fill {
+  position: relative;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #7c2d12, #ff8a1f 70%, #ffd166);
+}
+
+.theme-halloween .timer-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -0.5em;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff6c9, #ffb347 40%, rgba(255, 106, 0, 0) 70%);
+  transform: translateY(-50%);
+  animation: hw-spark 0.25s ease-in-out infinite alternate;
+}
+
+@keyframes hw-spark {
+  to {
+    transform: translateY(-50%) scale(1.5);
+  }
+}
+
+.theme-halloween .timer-warning .timer-value {
+  color: #ff4d4d;
+  text-shadow:
+    0 0 0.2em rgba(255, 30, 30, 0.8),
+    0 0 0.8em rgba(180, 0, 0, 0.5);
+}
+
+.theme-halloween .timer-done .timer-value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 6em;
+  color: #ff3b3b;
+  text-shadow:
+    0 0.04em 0 #2a0000,
+    0 0 0.3em rgba(255, 0, 0, 0.6);
+}
+
+/* ---------- Resultatlister ---------- */
+
+.theme-halloween .result-list {
+  gap: 0.6em;
+}
+
+.theme-halloween .results .result-list,
+.theme-halloween .standings .result-list {
+  width: min(60vw, 100%);
+}
+
+.theme-halloween .result-row {
+  padding: 0.25em 1em;
+  font-size: 1.75em;
+  background: linear-gradient(90deg, rgba(20, 30, 38, 0.9), rgba(10, 16, 22, 0.7));
+  border: 1px solid rgba(239, 230, 210, 0.12);
+  border-left: 0.2em solid rgba(239, 230, 210, 0.25);
+  border-radius: 0.3em;
+  box-shadow: 0 0.4em 1.2em rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.theme-halloween .result-row-top {
+  outline: none;
+  background: linear-gradient(90deg, rgba(120, 45, 8, 0.85), rgba(40, 18, 8, 0.75));
+  border-color: rgba(255, 170, 70, 0.5);
+  border-left-color: #ff8a1f;
+  box-shadow:
+    0 0 2.2em rgba(255, 120, 20, 0.35),
+    0 0.4em 1.2em rgba(0, 0, 0, 0.5);
+}
+
+.theme-halloween .result-rank {
+  font-family: var(--font-display);
+  font-size: 1.3em;
+  color: var(--muted);
+}
+
+.theme-halloween .result-row-top .result-rank {
+  color: #ffd166;
+}
+
+.theme-halloween .result-name {
+  font-weight: 600;
+}
+
+.theme-halloween .result-points {
+  font-size: 1.45em;
+  font-weight: 800;
+  color: #ffb24a;
+  text-shadow: 0 0 0.3em rgba(255, 130, 20, 0.55);
+}
+
+.theme-halloween .result-round {
+  font-weight: 600;
+  color: #ffd9a8;
+}
+
+.theme-halloween .change-up {
+  color: #a3e635;
+  text-shadow: 0 0 0.4em rgba(163, 230, 53, 0.55);
+}
+
+.theme-halloween .change-down {
+  color: #ff5d6c;
+  text-shadow: 0 0 0.4em rgba(255, 60, 80, 0.5);
+}

@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { standings } from '../../shared/scoring.ts';
 import { CountUp } from './CountUp.tsx';
+import { listFontSize } from './listFontSize.ts';
 import type { ViewProps } from './ScreenRoot.tsx';
 
 /** Hvor lenge forrige stilling vises før lagene flytter seg til ny plassering. */
@@ -28,21 +29,21 @@ export function StandingsView({ state, theme }: ViewProps) {
         {isFinal ? 'Endelig resultat' : `Etter ${state.revealedGameIds.length} av ${state.gameCount} spill`}
       </p>
       <h1 className="screen-title">Sammenlagt</h1>
-      <ol className="result-list">
+      <ol className="result-list" style={{ fontSize: listFontSize(rows.length) }}>
         {ordered.map((row) => {
           const winner = isFinal && revealed && row.rank === 1;
           return (
             <motion.li
               key={row.team.id}
               layout
-              className={`result-row${winner ? ' result-row-top' : ''}`}
+              className={`result-row${winner ? ' result-row-top result-row-winner' : ''}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0, scale: winner ? 1.06 : 1 }}
               transition={{ layout: { type: 'spring', stiffness: 120, damping: 18 } }}
             >
               <span className="result-rank">{revealed ? row.rank : row.prevRank}.</span>
               <span className="result-avatar">
-                <TeamAvatar team={row.team} index={teamIndex.get(row.team.id) ?? 0} />
+                <TeamAvatar team={row.team} index={teamIndex.get(row.team.id) ?? 0} size="small" />
               </span>
               <span className="result-name">{row.team.name}</span>
               <span className="result-change">

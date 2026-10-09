@@ -3,7 +3,9 @@ import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import type { Game, GameInput, MediaType, Phase, ScoreMap, ShowInfo, Team, TimerState } from '../shared/types.ts';
 
-export const DATA_DIR = path.resolve(import.meta.dirname, '..', 'data');
+export const DATA_DIR = process.env.DATA_DIR
+  ? path.resolve(process.env.DATA_DIR)
+  : path.resolve(import.meta.dirname, '..', 'data');
 export const UPLOAD_DIR = path.join(DATA_DIR, 'uploads');
 
 mkdirSync(UPLOAD_DIR, { recursive: true });

@@ -8,6 +8,7 @@ import { GameView } from './GameView.tsx';
 import { LobbyView } from './LobbyView.tsx';
 import { RoundResultsView } from './RoundResultsView.tsx';
 import { StandingsView } from './StandingsView.tsx';
+import './screen.css';
 
 export interface ViewProps {
   state: ShowState;
@@ -43,7 +44,7 @@ export function ScreenRoot() {
   const viewKey = state ? `${state.phase}-${state.phase === 'lobby' || state.phase === 'standings' ? '' : state.currentGameId}` : 'loading';
 
   return (
-    <div className="screen" style={theme.vars}>
+    <div className={`screen theme-${theme.id}`} style={theme.vars}>
       {theme.Background && <theme.Background />}
       <AnimatePresence mode="wait">
         {state && (
