@@ -7,6 +7,12 @@ export function formatTime(ms: number): string {
   return `${minutes}:${String(seconds).padStart(2, '0')}`;
 }
 
+/** «A», «A og B», «A, B og C». */
+export function joinNames(names: string[]): string {
+  if (names.length <= 1) return names[0] ?? '';
+  return `${names.slice(0, -1).join(', ')} og ${names.at(-1)}`;
+}
+
 export const PHASE_LABELS: Record<Phase, string> = {
   lobby: 'Lobby',
   game: 'Spill',

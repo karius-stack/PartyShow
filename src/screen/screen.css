@@ -216,3 +216,61 @@
 .change-down {
   color: #ef4444;
 }
+
+.standings-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.avatar-fill {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- Vinner ---------- */
+
+.winner-spotlight {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4vmin;
+}
+
+.winner-avatars {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 4vmin;
+  margin: 1vh 0 2vh;
+}
+
+.winner-avatar {
+  width: 24vmin;
+  height: 26vmin;
+}
+
+/* Delt seier: mindre figurer så alle får plass. */
+.winner-avatars:has(.winner-avatar:nth-child(3)) .winner-avatar {
+  width: 17vmin;
+  height: 18.5vmin;
+}
+
+.winner-name {
+  position: relative;
+  max-width: 90vw;
+  font-size: 7em;
+}
+
+.winner-points {
+  position: relative;
+  margin: 0;
+  font-size: 2.6em;
+  font-weight: 700;
+  color: var(--muted);
+}

@@ -26,7 +26,7 @@ const EMBERS = Array.from({ length: 18 }, () => ({
   size: 3 + rand() * 4,
 }));
 
-const BAT_PATH =
+export const BAT_PATH =
   'M30 13 C27 6 19 2 7 6 C11 8 12 12 11 16 C15 13 20 14 22 19 C24 16 27 16 30 20 ' +
   'C33 16 36 16 38 19 C40 14 45 13 49 16 C48 12 49 8 53 6 C41 2 33 6 30 13 Z';
 

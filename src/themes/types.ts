@@ -17,6 +17,8 @@ export interface Theme {
   TeamAvatar: ComponentType<TeamAvatarProps>;
   /** Valgfri animert bakgrunn bak alle visninger. */
   Background?: ComponentType;
+  /** Valgfri feiring bak vinneren når sluttresultatet vises. */
+  WinnerCelebration?: ComponentType;
   /** Hvordan et nytt lag kommer inn i lobbyen. */
   teamEntrance: { initial: TargetAndTransition; animate: TargetAndTransition; transition: Transition };
   /**

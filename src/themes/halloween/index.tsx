@@ -5,6 +5,7 @@ import '@fontsource/grenze/800.css';
 import './halloween.css';
 import type { Theme } from '../types.ts';
 import { Background } from './Background.tsx';
+import { Celebration } from './Celebration.tsx';
 import { Pumpkin } from './Pumpkin.tsx';
 
 export const halloweenTheme: Theme = {
@@ -12,6 +13,7 @@ export const halloweenTheme: Theme = {
   name: 'Halloween',
   TeamAvatar: Pumpkin,
   Background,
+  WinnerCelebration: Celebration,
   // Gresskaret faller ned fra himmelen og spretter på bakken.
   teamEntrance: {
     initial: { y: '-70vh', opacity: 0, rotate: -30, scale: 0.6 },
