@@ -1,0 +1,532 @@
+/* Funksjonell grunnstil. Visuell finpuss per tema kommer senere. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+/* ---------- Storskjerm ---------- */
+
+.screen {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  /* Skalerer med skjermen slik at det ser likt ut på TV og laptop. */
+  font-size: clamp(14px, 1.6vmin, 40px);
+}
+
+.theme-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.halloween-moon {
+  position: absolute;
+  top: 6vmin;
+  right: 8vmin;
+  width: 18vmin;
+  height: 18vmin;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff8dc, #f5deb3 60%, #d9b77a);
+  box-shadow: 0 0 80px 20px rgba(255, 236, 179, 0.25);
+  opacity: 0.85;
+}
+
+.screen-view {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4vmin;
+}
+
+.screen-offline {
+  position: absolute;
+  bottom: 2vmin;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5em 1em;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
+
+.screen-title {
+  margin: 0 0 0.4em;
+  font-size: 4.5em;
+  text-align: center;
+  color: var(--accent);
+  line-height: 1.05;
+}
+
+.screen-kicker {
+  margin: 0;
+  font-size: 1.6em;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.screen-subtitle {
+  font-size: 2em;
+  color: var(--muted);
+}
+
+.lobby,
+.game,
+.results,
+.standings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-height: 100%;
+}
+
+.team-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3em;
+  margin: 2em 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.team-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 10em;
+}
+
+.team-avatar {
+  width: 9em;
+  height: 9em;
+}
+
+.team-name {
+  margin-top: 0.4em;
+  font-size: 1.6em;
+  text-align: center;
+}
+
+.game-description {
+  max-width: 50em;
+  font-size: 2em;
+  text-align: center;
+  white-space: pre-line;
+}
+
+.game-media {
+  margin: 1em 0;
+}
+
+.game-media img,
+.game-media video {
+  max-width: 70vw;
+  max-height: 40vh;
+  border-radius: 1em;
+}
+
+.timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1em;
+}
+
+.timer-value {
+  font-size: 6em;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.timer-bar {
+  width: 30em;
+  height: 0.6em;
+  border-radius: 999px;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.timer-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left;
+  transition: transform 0.1s linear;
+}
+
+.timer-warning .timer-value {
+  color: #ef4444;
+}
+
+.timer-done .timer-value {
+  color: #ef4444;
+  font-size: 5em;
+}
+
+.result-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  width: min(60em, 100%);
+  margin: 1em 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.result-row {
+  display: grid;
+  grid-template-columns: 3em 3.5em 1fr 4em 4em 5em;
+  align-items: center;
+  gap: 1em;
+  padding: 0.5em 1.2em;
+  border-radius: 0.8em;
+  background: var(--panel);
+  font-size: 1.8em;
+}
+
+.result-row-top {
+  outline: 3px solid var(--accent);
+}
+
+.result-rank {
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.result-avatar {
+  width: 3em;
+  height: 3em;
+}
+
+.results .result-row {
+  grid-template-columns: 3em 3.5em 1fr 5em;
+}
+
+.result-points {
+  font-size: 1.3em;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.result-round {
+  color: var(--muted);
+  text-align: right;
+}
+
+.change-up {
+  color: #22c55e;
+}
+
+.change-down {
+  color: #ef4444;
+}
+
+/* ---------- Kontrollpanel ---------- */
+
+.admin,
+.admin-pin,
+.admin-loading {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+  color: #111827;
+}
+
+.admin-pin {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 320px;
+  margin-top: 15vh;
+}
+
+.admin-pin label,
+.game-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.admin-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.admin-phase {
+  color: #4b5563;
+}
+
+.admin-status {
+  margin-left: auto;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.admin-status-connected {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.admin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  border-bottom: 1px solid #d1d5db;
+  margin-bottom: 16px;
+}
+
+.admin-tabs button {
+  padding: 8px 14px;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-tabs button.active {
+  border-bottom-color: #ea580c;
+  font-weight: 700;
+}
+
+.admin-error {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #991b1b;
+  cursor: pointer;
+}
+
+.admin-error-text {
+  color: #b91c1c;
+}
+
+.admin-card {
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.admin-card h3 {
+  margin: 0 0 12px;
+}
+
+.admin-card summary {
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-now {
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.admin-hint {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.admin-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.admin-list {
+  margin: 12px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-list-item {
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.admin-list-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0;
+}
+
+.admin-list-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.game-summary {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.game-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.game-form .checkbox,
+.game-form .inline {
+  flex-direction: row;
+  align-items: center;
+  font-weight: 400;
+}
+
+.game-form .inline input {
+  width: 6em;
+}
+
+.media-thumb {
+  max-width: 120px;
+  max-height: 68px;
+  border-radius: 4px;
+}
+
+input,
+select,
+textarea {
+  padding: 6px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #f9fafb;
+  font: inherit;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  border-color: #ea580c;
+  background: #ea580c;
+  color: #fff;
+}
+
+.btn-danger {
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.btn-small {
+  padding: 4px 10px;
+}
+
+.badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #4b5563;
+  font-size: 12px;
+}
+
+.badge-on {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.score-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.score-table td {
+  padding: 6px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.score-table td:last-child {
+  text-align: right;
+}
+
+.score-input {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.score-input input {
+  width: 4.5em;
+  text-align: center;
+}
+
+.timer-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timer-control-value {
+  min-width: 4em;
+  font-size: 28px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #000;
+}
+
+/* Rendrer storskjermen i 1920×1080 og skalerer ned til kortbredden. */
+.preview iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  border: 0;
+  transform: scale(var(--preview-scale, 0.25));
+  transform-origin: top left;
+  pointer-events: none;
+}
