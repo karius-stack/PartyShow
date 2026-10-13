@@ -1,5 +1,5 @@
 import { useEffect, useState, type KeyboardEvent } from 'react';
-import { useAdmin } from './context.ts';
+import { useGameshow } from './context.ts';
 
 function ScoreInput({ value, onCommit }: { value: number | undefined; onCommit: (points: number | null) => void }) {
   const [text, setText] = useState(value?.toString() ?? '');
@@ -48,7 +48,7 @@ function ScoreInput({ value, onCommit }: { value: number | undefined; onCommit: 
 }
 
 export function ScorePanel() {
-  const { state, send } = useAdmin();
+  const { state, send } = useGameshow();
   const [gameId, setGameId] = useState<number | null>(state.currentGameId ?? state.games[0]?.id ?? null);
 
   // Følg aktivt spill når showet går videre.

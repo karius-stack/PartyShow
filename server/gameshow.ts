@@ -1,19 +1,10 @@
 import { nextGame, timerRemainingMs } from '../shared/scoring.ts';
-import type { Game, GameInput, Phase, ScoreMap, ShowState, TimerState } from '../shared/types.ts';
+import type { Game, GameInput, GameshowPhase, GameshowState, ScoreMap, TimerState } from '../shared/types.ts';
 import * as db from './db.ts';
+import { ShowError } from './errors.ts';
+import { cleanName, move } from './util.ts';
 
-/** Feil som er ment å vises for admin. */
-export class ShowError extends Error {}
-
-const MAX_NAME_LENGTH = 40;
-const PHASES: Phase[] = ['lobby', 'game', 'roundResults', 'standings'];
-
-function cleanName(name: unknown, what: string): string {
-  const trimmed = typeof name === 'string' ? name.trim() : '';
-  if (!trimmed) throw new ShowError(`${what} kan ikke være tomt`);
-  if (trimmed.length > MAX_NAME_LENGTH) throw new ShowError(`${what} kan være maks ${MAX_NAME_LENGTH} tegn`);
-  return trimmed;
-}
+const PHASES: GameshowPhase[] = ['lobby', 'game', 'roundResults', 'standings'];
 
 function cleanGameInput(input: GameInput): GameInput {
   const timerSeconds = input.timerSeconds === null || input.timerSeconds === undefined ? null : Number(input.timerSeconds);
@@ -43,23 +34,15 @@ function pausedTimer(timer: TimerState | null): TimerState | null {
   return { ...timer, endsAt: null, remainingMs: timerRemainingMs(timer, Date.now()) };
 }
 
-function move<T extends { id: number }>(items: T[], id: number, direction: -1 | 1): number[] {
-  const ids = items.map((item) => item.id);
-  const from = ids.indexOf(id);
-  if (from === -1) throw new ShowError('Fant ikke elementet');
-  const to = from + direction;
-  if (to < 0 || to >= ids.length) return ids;
-  [ids[from], ids[to]] = [ids[to], ids[from]];
-  return ids;
-}
-
 /**
- * All tilstand ligger i SQLite; kontrolleren leser og skriver derfra ved
- * hver kommando, så en omstart av serveren fortsetter der man slapp.
+ * Gameshow-modusen: lag, spill, poeng og timer. All tilstand ligger i SQLite;
+ * kontrolleren leser og skriver derfra ved hver kommando, så en omstart av
+ * serveren fortsetter der man slapp.
  */
-export class ShowController {
-  readonly showId = db.getOrCreateActiveShow().id;
+export class GameshowController {
   private listeners = new Set<() => void>();
+
+  constructor(readonly showId: number) {}
 
   onChange(listener: () => void) {
     this.listeners.add(listener);
@@ -81,11 +64,9 @@ export class ShowController {
 
   // --- Visning ---
 
-  adminState(): ShowState {
-    const show = db.getOrCreateActiveShow();
+  adminState(): GameshowState {
     const games = db.listGames(this.showId);
     return {
-      show,
       ...db.getState(this.showId),
       teams: db.listTeams(this.showId),
       games,
@@ -95,7 +76,7 @@ export class ShowController {
   }
 
   /** Som adminState, men uten kommende spill og uten poeng som ikke er avslørt. */
-  publicState(): ShowState {
+  publicState(): GameshowState {
     const state = this.adminState();
     const visible = new Set(state.revealedGameIds);
     if (state.currentGameId !== null) visible.add(state.currentGameId);
@@ -107,12 +88,7 @@ export class ShowController {
     return { ...state, games: state.games.filter((g) => visible.has(g.id)), scores };
   }
 
-  // --- Show ---
-
-  updateShow(input: { name: string; themeId: string }) {
-    db.updateShow(this.showId, cleanName(input.name, 'Shownavn'), cleanName(input.themeId, 'Tema'));
-    this.changed();
-  }
+  // --- Nullstilling ---
 
   reset(options: { removeTeams: boolean }) {
     db.transaction(() => {
@@ -220,7 +196,7 @@ export class ShowController {
   }
 
   /** Manuell overstyring av hva storskjermen viser, for å rette feil underveis. */
-  goTo(phase: Phase, gameId: number | null) {
+  goTo(phase: GameshowPhase, gameId: number | null) {
     if (!PHASES.includes(phase)) throw new ShowError('Ukjent fase');
     this.mutateState((state) => {
       switch (phase) {

@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import type { ViewProps } from './ScreenRoot.tsx';
 
-export function LobbyView({ state, theme }: ViewProps) {
+export function LobbyView({ state, show, theme }: ViewProps) {
   const { TeamAvatar, teamEntrance } = theme;
 
   return (
@@ -10,7 +10,7 @@ export function LobbyView({ state, theme }: ViewProps) {
         {state.teams.length === 0 ? 'Velkommen' : `${state.teams.length} lag påmeldt`}
       </motion.p>
       <motion.h1 className="screen-title" initial={{ y: -40, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
-        {state.show.name}
+        {show.name}
       </motion.h1>
       {state.teams.length === 0 && <p className="screen-subtitle">Venter på lag …</p>}
       <motion.ul className="team-grid" layout>

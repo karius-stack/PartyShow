@@ -1,30 +1,84 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
-import type { ShowState } from '../../shared/types.ts';
+import type { AppState, AwardsState, GameshowState, ShowInfo } from '../../shared/types.ts';
 import { createScreenSocket, useShowConnection, type ScreenSocket } from '../lib/socket.ts';
 import { getTheme } from '../themes/index.ts';
 import type { Theme } from '../themes/types.ts';
+import { CeremonyView } from './awards/CeremonyView.tsx';
+import { FinishedView } from './awards/FinishedView.tsx';
+import { NominatingView } from './awards/NominatingView.tsx';
+import { RegistrationView } from './awards/RegistrationView.tsx';
+import './awards/awards.css';
 import { GameView } from './GameView.tsx';
+import { LandingView } from './LandingView.tsx';
 import { LobbyView } from './LobbyView.tsx';
 import { RoundResultsView } from './RoundResultsView.tsx';
 import { StandingsView } from './StandingsView.tsx';
 import './screen.css';
 
 export interface ViewProps {
-  state: ShowState;
+  state: GameshowState;
+  show: ShowInfo;
   theme: Theme;
 }
 
-function CurrentView({ state, theme }: ViewProps) {
-  switch (state.phase) {
+export interface AwardsViewProps {
+  state: AwardsState;
+  show: ShowInfo;
+  theme: Theme;
+}
+
+function GameshowView(props: ViewProps) {
+  switch (props.state.phase) {
     case 'lobby':
-      return <LobbyView state={state} theme={theme} />;
+      return <LobbyView {...props} />;
     case 'game':
-      return <GameView state={state} theme={theme} />;
+      return <GameView {...props} />;
     case 'roundResults':
-      return <RoundResultsView state={state} theme={theme} />;
+      return <RoundResultsView {...props} />;
     case 'standings':
-      return <StandingsView state={state} theme={theme} />;
+      return <StandingsView {...props} />;
+  }
+}
+
+function AwardsView(props: AwardsViewProps) {
+  switch (props.state.phase) {
+    case 'registration':
+      return <RegistrationView {...props} />;
+    case 'nominating':
+      return <NominatingView {...props} />;
+    case 'ceremony':
+      return <CeremonyView {...props} />;
+    case 'finished':
+      return <FinishedView {...props} />;
+  }
+}
+
+function CurrentView({ state, theme }: { state: AppState; theme: Theme }) {
+  switch (state.activeMode) {
+    case null:
+      return <LandingView showName={state.show.name} />;
+    case 'gameshow':
+      return <GameshowView state={state.gameshow} show={state.show} theme={theme} />;
+    case 'awards':
+      return <AwardsView state={state.awards} show={state.show} theme={theme} />;
+  }
+}
+
+/** Ny nøkkel ved modusbytte, faseskifte eller nytt spill/ny nominasjon gir animert overgang. */
+function viewKey(state: AppState | null): string {
+  if (!state) return 'loading';
+  switch (state.activeMode) {
+    case null:
+      return 'landing';
+    case 'gameshow': {
+      const { phase, currentGameId } = state.gameshow;
+      return `gameshow-${phase}-${phase === 'lobby' || phase === 'standings' ? '' : currentGameId}`;
+    }
+    case 'awards': {
+      const { phase, currentCategoryId } = state.awards;
+      return `awards-${phase}-${phase === 'ceremony' ? currentCategoryId : ''}`;
+    }
   }
 }
 
@@ -40,8 +94,6 @@ export function ScreenRoot() {
   const { state, status } = useShowConnection(socket);
 
   const theme = getTheme(state?.show.themeId ?? 'default');
-  // Ny nøkkel ved faseskifte eller nytt spill gir animert overgang.
-  const viewKey = state ? `${state.phase}-${state.phase === 'lobby' || state.phase === 'standings' ? '' : state.currentGameId}` : 'loading';
 
   return (
     <div className={`screen theme-${theme.id}`} style={theme.vars}>
@@ -49,7 +101,7 @@ export function ScreenRoot() {
       <AnimatePresence mode="wait">
         {state && (
           <motion.main
-            key={viewKey}
+            key={viewKey(state)}
             className="screen-view"
             initial={{ opacity: 0, scale: 0.96, filter: 'blur(8px)' }}
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}

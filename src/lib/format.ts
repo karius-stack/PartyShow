@@ -1,4 +1,4 @@
-import type { Phase } from '../../shared/types.ts';
+import type { AwardsPhase, GameshowPhase, ModeId } from '../../shared/types.ts';
 
 export function formatTime(ms: number): string {
   const totalSeconds = Math.ceil(ms / 1000);
@@ -13,9 +13,21 @@ export function joinNames(names: string[]): string {
   return `${names.slice(0, -1).join(', ')} og ${names.at(-1)}`;
 }
 
-export const PHASE_LABELS: Record<Phase, string> = {
+export const MODE_LABELS: Record<ModeId, string> = {
+  gameshow: 'Gameshow',
+  awards: 'Kåring',
+};
+
+export const PHASE_LABELS: Record<GameshowPhase, string> = {
   lobby: 'Lobby',
   game: 'Spill',
   roundResults: 'Runderesultater',
   standings: 'Sammenlagt',
+};
+
+export const AWARDS_PHASE_LABELS: Record<AwardsPhase, string> = {
+  registration: 'Registrering',
+  nominating: 'Nominering',
+  ceremony: 'Kåring',
+  finished: 'Alle vinnerne',
 };

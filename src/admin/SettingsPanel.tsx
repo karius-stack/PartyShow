@@ -3,9 +3,9 @@ import { themes } from '../themes/index.ts';
 import { useAdmin } from './context.ts';
 
 export function SettingsPanel() {
-  const { state, send } = useAdmin();
-  const [name, setName] = useState(state.show.name);
-  const [themeId, setThemeId] = useState(state.show.themeId);
+  const { app, send } = useAdmin();
+  const [name, setName] = useState(app.show.name);
+  const [themeId, setThemeId] = useState(app.show.themeId);
 
   const save = (e: FormEvent) => {
     e.preventDefault();
@@ -38,7 +38,7 @@ export function SettingsPanel() {
       </form>
 
       <div className="admin-card">
-        <h3>Nullstill</h3>
+        <h3>Nullstill gameshow</h3>
         <p className="admin-hint">Spillene beholdes alltid. Nullstilling kan ikke angres.</p>
         <div className="admin-row">
           <button
@@ -58,6 +58,33 @@ export function SettingsPanel() {
             }}
           >
             Nullstill alt inkludert lag
+          </button>
+        </div>
+      </div>
+
+      <div className="admin-card">
+        <h3>Nullstill kåring</h3>
+        <p className="admin-hint">Nominasjonene beholdes alltid. Nullstilling kan ikke angres.</p>
+        <div className="admin-row">
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              if (confirm('Slette alle stemmer og starte kåringen på nytt fra registrering? Deltakerne beholdes.')) {
+                void send('awards:reset', { removeParticipants: false, removeCategories: false });
+              }
+            }}
+          >
+            Nullstill stemmer og fremdrift
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              if (confirm('Slette alle deltakere og stemmer og starte kåringen på nytt?')) {
+                void send('awards:reset', { removeParticipants: true, removeCategories: false });
+              }
+            }}
+          >
+            Nullstill alt inkludert deltakere
           </button>
         </div>
       </div>
