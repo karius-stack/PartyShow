@@ -47,14 +47,15 @@
   position: relative;
   width: 70%;
   height: 0.25em;
-  margin-top: 0.4em;
+  /* Under halen på «y» i ordmerket (line-height 1 klipper den ikke). */
+  margin-top: 2.5em;
   border-radius: 999px;
   background: linear-gradient(90deg, transparent, var(--accent), transparent);
 }
 
 .landing-show {
   position: relative;
-  margin: 1.2em 0 0;
+  margin: 0.2em 0 0;
   font-size: 2.4em;
   letter-spacing: 0.3em;
   text-transform: uppercase;
