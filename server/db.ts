@@ -1,7 +1,7 @@
 import { mkdirSync } from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
-import type { Game, GameInput, MediaType, Phase, ScoreMap, ShowInfo, Team, TimerState } from '../shared/types.ts';
+import type { Game, GameInput, GameshowPhase, MediaType, ModeId, ScoreMap, ShowInfo, Team, TimerState } from '../shared/types.ts';
 
 export const DATA_DIR = process.env.DATA_DIR
   ? path.resolve(process.env.DATA_DIR)
@@ -10,7 +10,8 @@ export const UPLOAD_DIR = path.join(DATA_DIR, 'uploads');
 
 mkdirSync(UPLOAD_DIR, { recursive: true });
 
-const db = new DatabaseSync(path.join(DATA_DIR, 'partyshow.db'));
+/** Delt tilkobling – brukes også av `awardsDb.ts`. */
+export const db = new DatabaseSync(path.join(DATA_DIR, 'partyshow.db'));
 
 db.exec(`
   PRAGMA journal_mode = WAL;
@@ -55,16 +56,21 @@ db.exec(`
     revealed_game_ids TEXT NOT NULL DEFAULT '[]',
     timer TEXT
   );
+
+  CREATE TABLE IF NOT EXISTS app_state (
+    show_id INTEGER PRIMARY KEY REFERENCES shows(id) ON DELETE CASCADE,
+    active_mode TEXT
+  );
 `);
 
 export interface StoredState {
-  phase: Phase;
+  phase: GameshowPhase;
   currentGameId: number | null;
   revealedGameIds: number[];
   timer: TimerState | null;
 }
 
-type Row = Record<string, unknown>;
+export type Row = Record<string, unknown>;
 
 export function transaction<T>(fn: () => T): T {
   db.exec('BEGIN');
@@ -94,7 +100,20 @@ export function updateShow(showId: number, name: string, themeId: string) {
   db.prepare('UPDATE shows SET name = ?, theme_id = ? WHERE id = ?').run(name, themeId, showId);
 }
 
-// --- Tilstand ---
+// --- Aktiv modus ---
+
+export function getActiveMode(showId: number): ModeId | null {
+  const row = db.prepare('SELECT active_mode FROM app_state WHERE show_id = ?').get(showId) as Row | undefined;
+  return row?.active_mode === 'gameshow' || row?.active_mode === 'awards' ? row.active_mode : null;
+}
+
+export function setActiveMode(showId: number, mode: ModeId | null) {
+  db.prepare(
+    'INSERT INTO app_state (show_id, active_mode) VALUES (?, ?) ON CONFLICT (show_id) DO UPDATE SET active_mode = excluded.active_mode',
+  ).run(showId, mode);
+}
+
+// --- Gameshow-tilstand ---
 
 export function getState(showId: number): StoredState {
   const row = db.prepare('SELECT * FROM show_state WHERE show_id = ?').get(showId) as Row | undefined;
@@ -103,7 +122,7 @@ export function getState(showId: number): StoredState {
     return { phase: 'lobby', currentGameId: null, revealedGameIds: [], timer: null };
   }
   return {
-    phase: row.phase as Phase,
+    phase: row.phase as GameshowPhase,
     currentGameId: row.current_game_id === null ? null : Number(row.current_game_id),
     revealedGameIds: JSON.parse(String(row.revealed_game_ids)) as number[],
     timer: row.timer === null ? null : (JSON.parse(String(row.timer)) as TimerState),
@@ -193,7 +212,7 @@ export function deleteGame(showId: number, id: number) {
 }
 
 /** Skriver ny rekkefølge (0, 1, 2 …) for tabellen basert på id-listen. */
-export function setSortOrder(table: 'teams' | 'games', ids: number[]) {
+export function setSortOrder(table: 'teams' | 'games' | 'award_categories', ids: number[]) {
   const stmt = db.prepare(`UPDATE ${table} SET sort_order = ? WHERE id = ?`);
   ids.forEach((id, index) => stmt.run(index, id));
 }

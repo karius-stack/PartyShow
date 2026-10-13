@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import type { Game, GameInput, MediaType } from '../../shared/types.ts';
-import { useAdmin } from './context.ts';
+import { useAdmin, useGameshow } from './context.ts';
 
 const EMPTY_GAME: GameInput = { title: '', description: '', timerSeconds: null, mediaUrl: null, mediaType: null };
 
@@ -113,7 +113,7 @@ function gameStatus(game: Game, currentGameId: number | null, revealed: number[]
 }
 
 export function GamesEditor() {
-  const { state, send } = useAdmin();
+  const { state, send } = useGameshow();
   const [editing, setEditing] = useState<number | 'new' | null>(null);
 
   const toInput = ({ title, description, timerSeconds, mediaUrl, mediaType }: Game): GameInput => ({

@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import type { Team } from '../../shared/types.ts';
-import { useAdmin } from './context.ts';
+import { useAdmin, useGameshow } from './context.ts';
 
 function TeamRow({ team, isFirst, isLast }: { team: Team; isFirst: boolean; isLast: boolean }) {
   const { send } = useAdmin();
@@ -40,7 +40,7 @@ function TeamRow({ team, isFirst, isLast }: { team: Team; isFirst: boolean; isLa
 }
 
 export function TeamsPanel() {
-  const { state, send } = useAdmin();
+  const { state, send } = useGameshow();
   const [name, setName] = useState('');
 
   const addTeam = async (e: FormEvent) => {

@@ -571,3 +571,107 @@
   color: var(--fg);
   text-shadow: 0 0 0.3em rgba(255, 170, 70, 0.5);
 }
+
+/* ---------- Logo-side ---------- */
+
+.theme-halloween .landing-wordmark {
+  color: #efe6d2;
+  text-shadow:
+    0 0.03em 0 #1b2630,
+    0 0 0.25em rgba(160, 200, 220, 0.35);
+}
+
+.theme-halloween .landing-accent {
+  color: #ffb24a;
+  text-shadow:
+    0 0.03em 0 #4a1503,
+    0 0 0.18em rgba(255, 140, 30, 0.75),
+    0 0 0.7em rgba(255, 80, 0, 0.4);
+  animation: hw-candle 5s ease-in-out infinite;
+}
+
+/* ---------- Kåring ---------- */
+
+/* Portrettet står i et gotisk kirkevindu opplyst av gresskarlys nedenfra. */
+.theme-halloween .portrait-frame::before {
+  background:
+    radial-gradient(ellipse 70% 40% at 50% 100%, rgba(255, 120, 20, 0.45), transparent 70%),
+    linear-gradient(180deg, rgba(40, 58, 72, 0.9), rgba(12, 18, 24, 0.95));
+  border: 0.14em solid rgba(239, 230, 210, 0.22);
+  box-shadow:
+    inset 0 0 1.4em rgba(0, 0, 0, 0.7),
+    0 0 1.6em rgba(255, 120, 20, 0.18),
+    0 0.6em 1.4em rgba(0, 0, 0, 0.6);
+}
+
+.theme-halloween .portrait-name {
+  font-size: calc(var(--portrait-w, 10em) * 0.15);
+  color: var(--fg);
+  background: linear-gradient(180deg, rgba(28, 38, 46, 0.92), rgba(12, 18, 24, 0.92));
+  border: 1px solid rgba(239, 230, 210, 0.18);
+  border-radius: 0.6em 0.6em 0.2em 0.2em;
+  box-shadow:
+    0 0.3em 0.8em rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.theme-halloween .portrait-magic {
+  background:
+    radial-gradient(circle at 30% 75%, rgba(140, 255, 120, 0.45), transparent 40%),
+    radial-gradient(circle at 70% 30%, rgba(255, 140, 30, 0.6), transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(170, 110, 255, 0.4), transparent 60%);
+}
+
+.theme-halloween .join-card {
+  background: linear-gradient(180deg, rgba(20, 30, 38, 0.92), rgba(8, 12, 16, 0.92));
+  border-color: rgba(255, 170, 70, 0.35);
+  box-shadow:
+    0 0 3em rgba(255, 120, 20, 0.2),
+    0 1em 3em rgba(0, 0, 0, 0.6);
+}
+
+.theme-halloween .join-heading {
+  color: #ffb24a;
+  text-shadow: 0 0 0.3em rgba(255, 130, 20, 0.55);
+}
+
+.theme-halloween .progress-ring-track {
+  stroke: rgba(239, 230, 210, 0.1);
+}
+
+.theme-halloween .progress-ring-fill {
+  stroke: #ff8a1f;
+}
+
+.theme-halloween .progress-ring-value {
+  color: #ffb24a;
+  text-shadow: 0 0 0.2em rgba(255, 130, 20, 0.6);
+}
+
+.theme-halloween .ceremony-agenda li,
+.theme-halloween .vote-progress-bar {
+  background: rgba(10, 17, 24, 0.75);
+  border: 1px solid rgba(239, 230, 210, 0.14);
+}
+
+.theme-halloween .vote-progress-fill {
+  background: linear-gradient(90deg, #b8410a, #ff8a1f, #ffd166);
+  box-shadow: 0 0 1em rgba(255, 140, 30, 0.6);
+}
+
+.theme-halloween .finalist-winner .portrait-frame::before {
+  border-color: rgba(255, 190, 90, 0.8);
+  box-shadow:
+    inset 0 0 1.4em rgba(0, 0, 0, 0.5),
+    0 0 3em rgba(255, 140, 30, 0.6),
+    0 0.6em 1.4em rgba(0, 0, 0, 0.6);
+}
+
+.theme-halloween .hall-of-fame-category {
+  color: #ffd9a8;
+}
+
+.theme-halloween .hall-of-fame-name {
+  color: #ffb24a;
+  text-shadow: 0 0 0.25em rgba(255, 130, 20, 0.6);
+}

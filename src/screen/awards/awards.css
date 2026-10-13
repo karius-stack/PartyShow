@@ -1,0 +1,477 @@
+/* Storskjermen i kåringsmodus og logo-siden. Temaene legger egen stil oppå. */
+
+/* ---------- Logo-side ---------- */
+
+.landing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.landing-logo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.landing-glow {
+  position: absolute;
+  inset: -40% -20%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--accent) 35%, transparent), transparent 65%);
+  filter: blur(4vmin);
+}
+
+.landing-wordmark {
+  position: relative;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 13em;
+  line-height: 1;
+  color: var(--fg);
+  white-space: nowrap;
+}
+
+.landing-wordmark span {
+  display: inline-block;
+}
+
+.landing-accent {
+  color: var(--accent);
+}
+
+.landing-rule {
+  position: relative;
+  width: 70%;
+  height: 0.25em;
+  /* Under halen på «y» i ordmerket (line-height 1 klipper den ikke). */
+  margin-top: 2.5em;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+.landing-show {
+  position: relative;
+  margin: 0.2em 0 0;
+  font-size: 2.4em;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- Portretter ---------- */
+
+.portrait {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--portrait-w, 10em);
+}
+
+.portrait-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+}
+
+/* Buet «vindu» bak personen. */
+.portrait-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50% 50% 0.6em 0.6em / 34% 34% 0.6em 0.6em;
+  background: radial-gradient(ellipse at 50% 80%, color-mix(in srgb, var(--accent) 40%, transparent), var(--panel) 70%);
+  border: 0.12em solid color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow: 0 0 1.2em color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.portrait-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.portrait-photo .portrait-img {
+  object-fit: cover;
+  border-radius: 50% 50% 0.6em 0.6em / 34% 34% 0.6em 0.6em;
+}
+
+/* AI-bildet har gjennomsiktig bakgrunn og får stikke litt over rammen. */
+.portrait-ai .portrait-img {
+  inset: auto 0 0;
+  height: 114%;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: drop-shadow(0 0.3em 0.6em rgba(0, 0, 0, 0.6));
+}
+
+.portrait-magic {
+  position: absolute;
+  inset: 0;
+  border-radius: 50% 50% 0.6em 0.6em / 34% 34% 0.6em 0.6em;
+  background:
+    radial-gradient(circle at 30% 70%, rgba(190, 120, 255, 0.55), transparent 40%),
+    radial-gradient(circle at 70% 30%, color-mix(in srgb, var(--accent) 60%, transparent), transparent 45%);
+  mix-blend-mode: screen;
+  animation: portrait-magic 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes portrait-magic {
+  from {
+    opacity: 0.35;
+    filter: hue-rotate(0deg) blur(0.2em);
+  }
+  to {
+    opacity: 0.9;
+    filter: hue-rotate(60deg) blur(0.5em);
+  }
+}
+
+.portrait-name {
+  max-width: 120%;
+  margin-top: 0.4em;
+  padding: 0.15em 0.7em 0.25em;
+  overflow: hidden;
+  font-size: calc(var(--portrait-w, 10em) * 0.14);
+  font-weight: 600;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 0.5em;
+  background: var(--panel);
+}
+
+/* Fyller resten av høyden; useFittedPortraits regner ut --portrait-w. */
+.portrait-grid {
+  display: flex;
+  flex: 1 1 0;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  gap: calc(var(--portrait-w, 10em) * 0.18);
+  width: 100%;
+  min-height: 0;
+  margin: 1em 0 0;
+  padding: calc(var(--portrait-w, 10em) * 0.2) 0 0;
+  list-style: none;
+}
+
+/* ---------- Registrering ---------- */
+
+.awards-registration {
+  display: grid;
+  grid-template-rows: 100%;
+  grid-template-columns: auto 1fr;
+  gap: 4vmin;
+  width: 100%;
+  height: 100%;
+}
+
+.join-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: center;
+  width: 30vmin;
+  padding: 2.4vmin;
+  border-radius: 1.2em;
+  background: var(--panel);
+  border: 1px solid color-mix(in srgb, var(--fg) 14%, transparent);
+  box-shadow: 0 1em 3em rgba(0, 0, 0, 0.5);
+}
+
+.join-heading {
+  margin: 0 0 0.6em;
+  font-family: var(--font-display);
+  font-size: 2.6em;
+  text-align: center;
+  color: var(--accent);
+}
+
+.qr-code {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 0.6em;
+  overflow: hidden;
+  background: #f4ecd8;
+}
+
+.qr-code svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.join-url {
+  margin: 0.8em 0 0;
+  font-size: 1.3em;
+  color: var(--muted);
+  word-break: break-all;
+  text-align: center;
+}
+
+.awards-registration-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  min-height: 0;
+  padding-top: 2vh;
+}
+
+.awards-registration-main .screen-subtitle {
+  margin: 0;
+}
+
+.awards-registration .portrait-grid {
+  margin-bottom: 4vh;
+}
+
+/* ---------- Nominering ---------- */
+
+.awards-nominating,
+.ceremony,
+.ceremony-intro,
+.awards-finished {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.awards-nominating {
+  padding-top: 2vh;
+}
+
+.nominating-body {
+  display: flex;
+  align-items: center;
+  gap: 5vmin;
+  margin-top: 1em;
+}
+
+.nominating-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 2em;
+}
+
+.nominating-categories li::before {
+  content: '✦ ';
+  color: var(--accent);
+}
+
+.portrait-grid-compact {
+  margin-bottom: 3vh;
+}
+
+.progress-ring {
+  position: relative;
+  width: 30vmin;
+  height: 30vmin;
+}
+
+.progress-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progress-ring-track,
+.progress-ring-fill {
+  fill: none;
+  stroke-width: 7;
+}
+
+.progress-ring-track {
+  stroke: var(--panel);
+}
+
+.progress-ring-fill {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 0.6vmin var(--accent));
+}
+
+.progress-ring-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.progress-ring-value {
+  font-family: var(--font-display);
+  font-size: 7em;
+  color: var(--accent);
+}
+
+.progress-ring-total {
+  font-size: 2em;
+  font-weight: 600;
+}
+
+.progress-ring-label {
+  margin-top: 0.3em;
+  font-size: 1.3em;
+  color: var(--muted);
+}
+
+/* ---------- Seremoni ---------- */
+
+.ceremony,
+.ceremony-intro {
+  justify-content: center;
+}
+
+.ceremony {
+  position: relative;
+}
+
+.ceremony > * {
+  position: relative;
+}
+
+.ceremony-title {
+  font-size: 5.4em;
+}
+
+.ceremony-agenda {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8em 1.6em;
+  max-width: 80vw;
+  margin: 1em 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 2.2em;
+}
+
+.ceremony-agenda li {
+  padding: 0.3em 0.9em;
+  border-radius: 999px;
+  background: var(--panel);
+}
+
+.finalists {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 5vmin;
+  margin: 5vh 0 3vh;
+  padding: 0;
+  list-style: none;
+  --portrait-w: 24vmin;
+}
+
+.finalists:has(> li:nth-child(4)) {
+  --portrait-w: 19vmin;
+}
+
+.finalists:has(> li:nth-child(6)) {
+  --portrait-w: 15vmin;
+}
+
+.finalist {
+  transform-origin: 50% 100%;
+}
+
+.finalist-winner {
+  z-index: 2;
+}
+
+.vote-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.vote-progress-text {
+  font-size: 2.2em;
+}
+
+.vote-progress-text strong {
+  color: var(--accent);
+}
+
+.vote-progress-bar {
+  width: 40vw;
+  height: 0.8em;
+  border-radius: 999px;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.vote-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+}
+
+.ceremony-winner-name {
+  margin: 0;
+  font-size: 6em;
+}
+
+/* ---------- Alle vinnerne ---------- */
+
+.awards-finished {
+  padding-top: 3vh;
+}
+
+.hall-of-fame {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  gap: 3em 4em;
+  flex: 1;
+  margin: 0;
+  padding: 0 0 6vh;
+  list-style: none;
+  --portrait-w: 19vmin;
+}
+
+.hall-of-fame li {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  max-width: 32vmin;
+}
+
+.hall-of-fame-category {
+  margin-bottom: 0.6em;
+  font-size: 1.5em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.hall-of-fame-portraits {
+  display: flex;
+  gap: 0.6em;
+}
+
+.hall-of-fame-name {
+  margin-top: 0.5em;
+  font-family: var(--font-display);
+  font-size: 2.2em;
+  text-align: center;
+}

@@ -1,10 +1,13 @@
-import { useCallback, useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
-import type { AdminCommand, CommandArgs } from '../../shared/types.ts';
-import { PHASE_LABELS } from '../lib/format.ts';
+import { useCallback, useEffect, useMemo, useState, type ComponentType, type FormEvent, type ReactNode } from 'react';
+import type { AdminCommand, AppState, CommandArgs, ModeId } from '../../shared/types.ts';
+import { AWARDS_PHASE_LABELS, MODE_LABELS, PHASE_LABELS } from '../lib/format.ts';
 import { createAdminSocket, sendCommand, useShowConnection, type AdminSocket } from '../lib/socket.ts';
 import './admin.css';
 import { AdminContext, type AdminContextValue } from './context.ts';
+import { AwardsControl } from './AwardsControl.tsx';
+import { CategoriesEditor } from './CategoriesEditor.tsx';
 import { GamesEditor } from './GamesEditor.tsx';
+import { ParticipantsPanel } from './ParticipantsPanel.tsx';
 import { SettingsPanel } from './SettingsPanel.tsx';
 import { ShowControl } from './ShowControl.tsx';
 import { TeamsPanel } from './TeamsPanel.tsx';
@@ -43,12 +46,55 @@ function useColorMode() {
   return { mode, label: COLOR_MODES.find((m) => m.mode === mode)!.label, cycle };
 }
 
-const TABS = [
-  { id: 'show', label: 'Kjør show', Component: ShowControl },
-  { id: 'teams', label: 'Lag', Component: TeamsPanel },
-  { id: 'games', label: 'Spill', Component: GamesEditor },
-  { id: 'settings', label: 'Innstillinger', Component: SettingsPanel },
-] as const;
+type TabId = 'show' | 'teams' | 'games' | 'awards' | 'participants' | 'categories' | 'settings';
+
+interface TabGroup {
+  /** Modusen fanene hører til, eller null for felles faner. */
+  mode: ModeId | null;
+  tabs: { id: TabId; label: string; Component: ComponentType }[];
+}
+
+const TAB_GROUPS: TabGroup[] = [
+  {
+    mode: 'gameshow',
+    tabs: [
+      { id: 'show', label: 'Kjør show', Component: ShowControl },
+      { id: 'teams', label: 'Lag', Component: TeamsPanel },
+      { id: 'games', label: 'Spill', Component: GamesEditor },
+    ],
+  },
+  {
+    mode: 'awards',
+    tabs: [
+      { id: 'awards', label: 'Kjør kåring', Component: AwardsControl },
+      { id: 'participants', label: 'Deltakere', Component: ParticipantsPanel },
+      { id: 'categories', label: 'Nominasjoner', Component: CategoriesEditor },
+    ],
+  },
+  { mode: null, tabs: [{ id: 'settings', label: 'Innstillinger', Component: SettingsPanel }] },
+];
+
+const TABS = TAB_GROUPS.flatMap((group) => group.tabs);
+
+/** «Kjør»-fanen for hver modus – admin hoppes hit når modusen aktiveres. */
+const RUN_TAB: Record<ModeId, TabId> = { gameshow: 'show', awards: 'awards' };
+
+const SCREEN_OPTIONS: { mode: ModeId | null; label: string }[] = [
+  { mode: null, label: 'Logo' },
+  { mode: 'gameshow', label: MODE_LABELS.gameshow },
+  { mode: 'awards', label: MODE_LABELS.awards },
+];
+
+function screenLabel(app: AppState): string {
+  switch (app.activeMode) {
+    case null:
+      return 'Logo';
+    case 'gameshow':
+      return `${MODE_LABELS.gameshow} – ${PHASE_LABELS[app.gameshow.phase]}`;
+    case 'awards':
+      return `${MODE_LABELS.awards} – ${AWARDS_PHASE_LABELS[app.awards.phase]}`;
+  }
+}
 
 function readStoredPin(): string {
   try {
@@ -83,7 +129,7 @@ export function AdminRoot() {
   // `attempt` gjør at samme PIN kan prøves på nytt.
   const [auth, setAuth] = useState(() => ({ pin: readStoredPin(), attempt: 0 }));
   const [socket, setSocket] = useState<AdminSocket | null>(null);
-  const [tab, setTab] = useState<(typeof TABS)[number]['id']>('show');
+  const [tab, setTab] = useState<TabId>('show');
   const [error, setError] = useState<string | null>(null);
   const colorMode = useColorMode();
 
@@ -96,6 +142,12 @@ export function AdminRoot() {
   }, [auth]);
 
   const { state, status } = useShowConnection(socket);
+
+  // Hopp til «Kjør»-fanen for modusen som vises – også ved første innlasting.
+  const activeMode = state?.activeMode;
+  useEffect(() => {
+    if (activeMode) setTab(RUN_TAB[activeMode]);
+  }, [activeMode]);
 
   useEffect(() => {
     if (!error) return;
@@ -114,7 +166,7 @@ export function AdminRoot() {
   );
 
   const context = useMemo<AdminContextValue | null>(
-    () => (state ? { state, pin: auth.pin, send, showError: setError } : null),
+    () => (state ? { app: state, pin: auth.pin, send, showError: setError } : null),
     [state, auth.pin, send],
   );
 
@@ -148,8 +200,8 @@ export function AdminRoot() {
     <AdminContext.Provider value={context}>
       <div className="admin">
         <header className="admin-header">
-          <strong>{context.state.show.name}</strong>
-          <span className="admin-phase">Storskjerm: {PHASE_LABELS[context.state.phase]}</span>
+          <strong>{context.app.show.name}</strong>
+          <span className="admin-phase">Storskjerm: {screenLabel(context.app)}</span>
           <span className="admin-header-end">
             <button className="theme-toggle" onClick={colorMode.cycle} title="Bytt mellom system, lys og mørk">
               Tema: {colorMode.label}
@@ -157,11 +209,32 @@ export function AdminRoot() {
             <span className={`admin-status admin-status-${status}`}>{status === 'connected' ? 'Tilkoblet' : 'Frakoblet'}</span>
           </span>
         </header>
-        <nav className="admin-tabs">
-          {TABS.map((t) => (
-            <button key={t.id} className={t.id === tab ? 'active' : ''} onClick={() => setTab(t.id)}>
-              {t.label}
+        <div className="mode-switch" role="group" aria-label="Vis på storskjermen">
+          <span className="mode-switch-label">På storskjermen:</span>
+          {SCREEN_OPTIONS.map((option) => (
+            <button
+              key={option.label}
+              className={option.mode === context.app.activeMode ? 'active' : ''}
+              aria-pressed={option.mode === context.app.activeMode}
+              onClick={() => send('mode:set', option.mode)}
+            >
+              {option.label}
             </button>
+          ))}
+        </div>
+        <nav className="admin-tabs">
+          {TAB_GROUPS.map((group) => (
+            <div
+              key={group.mode ?? 'common'}
+              className={`admin-tab-group${group.mode && group.mode === context.app.activeMode ? ' live' : ''}`}
+            >
+              {group.mode && <span className="admin-tab-group-label">{MODE_LABELS[group.mode]}</span>}
+              {group.tabs.map((t) => (
+                <button key={t.id} className={t.id === tab ? 'active' : ''} onClick={() => setTab(t.id)}>
+                  {t.label}
+                </button>
+              ))}
+            </div>
           ))}
         </nav>
         {error && (

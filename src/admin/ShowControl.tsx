@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { nextGame, timerRemainingMs } from '../../shared/scoring.ts';
-import type { Phase, TimerState } from '../../shared/types.ts';
+import type { GameshowPhase, TimerState } from '../../shared/types.ts';
 import { formatTime, PHASE_LABELS } from '../lib/format.ts';
 import { useServerNow } from '../lib/serverClock.ts';
-import { useAdmin } from './context.ts';
+import { useAdmin, useGameshow } from './context.ts';
+import { ModeInactiveNotice } from './ModeInactiveNotice.tsx';
 import { ScorePanel } from './ScorePanel.tsx';
+import { ScreenPreview } from './ScreenPreview.tsx';
 
 function TimerControl({ timer }: { timer: TimerState }) {
   const { send } = useAdmin();
@@ -33,29 +35,9 @@ function TimerControl({ timer }: { timer: TimerState }) {
   );
 }
 
-/** Viser storskjermen nedskalert fra 1920×1080 til kortets bredde. */
-function ScreenPreview() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new ResizeObserver(([entry]) => {
-      el.style.setProperty('--preview-scale', String(entry.contentRect.width / 1920));
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div className="preview" ref={ref}>
-      <iframe src="/" title="Storskjerm" tabIndex={-1} />
-    </div>
-  );
-}
-
 function ManualOverride() {
-  const { state, send } = useAdmin();
-  const [phase, setPhase] = useState<Phase>('lobby');
+  const { state, send } = useGameshow();
+  const [phase, setPhase] = useState<GameshowPhase>('lobby');
   const [chosenGameId, setGameId] = useState<number | null>(null);
   // Faller tilbake på første spill hvis valget mangler eller er slettet.
   const gameId = state.games.some((g) => g.id === chosenGameId) ? chosenGameId : (state.games[0]?.id ?? null);
@@ -66,8 +48,8 @@ function ManualOverride() {
       <summary>Manuell styring</summary>
       <p className="admin-hint">Bruk dette for å rette feil – f.eks. hoppe tilbake til et spill eller vise et tidligere resultat.</p>
       <div className="admin-row">
-        <select value={phase} onChange={(e) => setPhase(e.target.value as Phase)}>
-          {(Object.keys(PHASE_LABELS) as Phase[]).map((p) => (
+        <select value={phase} onChange={(e) => setPhase(e.target.value as GameshowPhase)}>
+          {(Object.keys(PHASE_LABELS) as GameshowPhase[]).map((p) => (
             <option key={p} value={p}>
               {PHASE_LABELS[p]}
             </option>
@@ -91,13 +73,15 @@ function ManualOverride() {
 }
 
 export function ShowControl() {
-  const { state, send } = useAdmin();
+  const { state, send } = useGameshow();
   const current = state.games.find((g) => g.id === state.currentGameId) ?? null;
   const upcoming = nextGame(state, state.games);
   const inGame = state.phase === 'game';
 
   return (
     <div className="show-control">
+      <ModeInactiveNotice mode="gameshow" />
+
       <div className="admin-card">
         <h3>Nå på storskjermen</h3>
         <p className="admin-now">

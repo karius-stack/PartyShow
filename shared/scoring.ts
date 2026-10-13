@@ -1,4 +1,4 @@
-import type { Game, ScoreMap, ShowState, Team, TimerState } from './types.ts';
+import type { Game, ScoreMap, GameshowState, Team, TimerState } from './types.ts';
 
 export interface RankedTeam {
   team: Team;
@@ -71,7 +71,7 @@ export function standings(teams: Team[], scores: ScoreMap, revealedGameIds: numb
 }
 
 /** Spillet som står for tur: første spill (i rekkefølge) som ikke er avslørt eller aktivt nå. */
-export function nextGame(state: Pick<ShowState, 'phase' | 'currentGameId' | 'revealedGameIds'>, games: Game[]): Game | null {
+export function nextGame(state: Pick<GameshowState, 'phase' | 'currentGameId' | 'revealedGameIds'>, games: Game[]): Game | null {
   const sorted = [...games].sort((a, b) => a.sortOrder - b.sortOrder);
   return (
     sorted.find(

@@ -418,3 +418,176 @@
   transform-origin: top left;
   pointer-events: none;
 }
+
+/* ---------- Moduser ---------- */
+
+.mode-switch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding: 4px;
+  border: 1px solid var(--a-border);
+  border-radius: 10px;
+  background: var(--a-surface);
+}
+
+.mode-switch-label {
+  padding: 0 8px;
+  color: var(--a-muted);
+  font-size: 14px;
+}
+
+.mode-switch button {
+  flex: 1;
+  min-width: 90px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  color: var(--a-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mode-switch button:hover:not(.active) {
+  background: var(--a-subtle);
+}
+
+.mode-switch button.active {
+  background: var(--a-accent);
+  color: var(--a-accent-text);
+}
+
+.admin-tabs {
+  gap: 4px 20px;
+}
+
+.admin-tab-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+}
+
+.admin-tab-group-label {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--a-subtle);
+  color: var(--a-muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.admin-tab-group.live .admin-tab-group-label {
+  background: var(--a-accent-soft);
+  color: var(--a-accent-soft-text);
+}
+
+.admin-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border: 1px dashed var(--a-border-strong);
+  border-radius: 10px;
+  color: var(--a-muted);
+}
+
+/* ---------- Kåring ---------- */
+
+.awards-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.awards-steps li {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--a-subtle);
+  color: var(--a-muted);
+}
+
+.awards-steps li.done {
+  background: var(--a-ok-soft);
+  color: var(--a-ok-text);
+}
+
+.awards-steps li.current {
+  background: var(--a-accent);
+  color: var(--a-accent-text);
+  font-weight: 700;
+}
+
+.progress-bar {
+  height: 8px;
+  margin: 6px 0 4px;
+  border-radius: 999px;
+  background: var(--a-subtle);
+  overflow: hidden;
+}
+
+.progress-bar > div {
+  height: 100%;
+  background: var(--a-accent);
+  transition: width 0.4s ease;
+}
+
+.avatar-thumb {
+  flex: none;
+  width: 44px;
+  height: 56px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: var(--a-subtle);
+}
+
+.avatar-thumb.ai {
+  object-fit: contain;
+}
+
+.tally {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tally td {
+  padding: 4px 0;
+  border-bottom: 1px solid var(--a-border);
+}
+
+.tally td:last-child {
+  width: 40%;
+  text-align: right;
+}
+
+.tally .is-winner {
+  font-weight: 700;
+  color: var(--a-accent-soft-text);
+}
+
+.category-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--a-border);
+}
+
+.category-list .category-title {
+  flex: 1;
+  min-width: 140px;
+}
