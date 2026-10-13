@@ -68,7 +68,7 @@ export interface Participant {
   name: string;
   /** Bildet deltakeren tok selv. */
   originalUrl: string;
-  /** AI-redigert bilde uten bakgrunn, når det er klart. */
+  /** Utklipp av personen med gjennomsiktig bakgrunn, når det er klart. */
   aiUrl: string | null;
   imageStatus: ImageStatus;
 }
@@ -179,6 +179,7 @@ export interface AdminClientEvents extends ScreenClientEvents {
   'participant:rename': (id: number, name: string, ack: Ack) => void;
   'participant:remove': (id: number, ack: Ack) => void;
   'participant:regenerateImage': (id: number, ack: Ack) => void;
+  'participant:regenerateAllImages': (ack: Ack) => void;
 
   'category:create': (title: string, ack: Ack) => void;
   'category:rename': (id: number, title: string, ack: Ack) => void;

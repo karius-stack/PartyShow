@@ -1,4 +1,4 @@
-/** Høyden på et portrett (bilde 3:4, AI-bilde som stikker opp og navneskilt) i forhold til bredden. */
+/** Høyden på et portrett (bilde 3:4, utklipp som stikker opp og navneskilt) i forhold til bredden. */
 const HEIGHT_RATIO = 1.8;
 /** Mellomrom mellom portrettene i forhold til bredden. */
 const GAP_RATIO = 0.18;

@@ -4,8 +4,8 @@ import type { Participant } from '../../../shared/types.ts';
 import { fitPortraitWidth } from './fitPortraits.ts';
 
 /**
- * Deltakerens bilde i en buet ramme med navneskilt. Mens AI-bildet lages vises
- * originalbildet med en «trylle»-effekt; ferdig AI-bilde (uten bakgrunn) stikker
+ * Deltakerens bilde i en buet ramme med navneskilt. Mens bakgrunnen fjernes vises
+ * originalbildet med en «trylle»-effekt; ferdig utklipp (uten bakgrunn) stikker
  * litt opp av rammen.
  */
 export function PortraitCard({ participant, showName = true }: { participant: Participant; showName?: boolean }) {

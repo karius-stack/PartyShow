@@ -12,7 +12,7 @@ Node 24+ · React + TypeScript + Vite · Motion · Socket.io · SQLite (`node:sq
 
 ```sh
 npm install
-cp .env.example .env   # sett ADMIN_PIN, og OPENAI_API_KEY for AI-bilder i kåringen
+cp .env.example .env   # sett ADMIN_PIN
 npm run dev            # Vite på :5173, server på :3001
 ```
 
@@ -40,17 +40,17 @@ npm start              # alt på én port (PORT, standard 3001)
 
 ### Kåring
 
-1. **Registrering** – gjestene skanner QR-koden og registrerer seg med navn og bilde (én gang per mobil). Bildet sendes til OpenAI, som fjerner bakgrunnen og gir personen en kul positur; originalbildet vises til AI-bildet er klart (eller hvis det feiler / `OPENAI_API_KEY` mangler).
+1. **Registrering** – gjestene skanner QR-koden og registrerer seg med navn og bilde (én gang per mobil). Bakgrunnen fjernes lokalt på serveren med MODNet – personen og klærne beholdes nøyaktig som på bildet. Originalbildet vises til utklippet er klart (eller hvis det feiler).
 2. **Nominering** – admin oppretter nominasjoner («Nominasjoner») og starter nomineringen. Da stenger registreringen. Alle nominerer én person per nominasjon fra mobilen (ikke seg selv); storskjermen viser hvor mange som er ferdige.
 3. **Kåring** – admin går gjennom én nominasjon om gangen. Topp 3 (flere ved likhet) vises, alle stemmer på mobilen, og admin avslører vinneren.
 4. **Alle vinnerne** – oversikt over vinnerne i alle nominasjonene.
 
-All tilstand lagres i `data/partyshow.db`. Opplastede filer og bilder ligger i `data/uploads/`.
+All tilstand lagres i `data/partyshow.db`. Opplastede filer og bilder ligger i `data/uploads/`. Modellen for bakgrunnsfjerning (ca. 25 MB) lastes ned til `data/models/` første gang serveren starter – start serveren én gang med internett før festen.
 
 ## Struktur
 
 - `shared/` – typer og ren logikk (poeng, finalister/vinnere) som brukes av både server og klient
-- `server/` – Express + Socket.io; `app.ts` samler modusene, `gameshow.ts` og `awards.ts` er tilstandsmaskinene, `imageAi.ts` snakker med OpenAI
+- `server/` – Express + Socket.io; `app.ts` samler modusene, `gameshow.ts` og `awards.ts` er tilstandsmaskinene, `cutout.ts` fjerner bakgrunnen på bildene
 - `src/screen/` – storskjerm-visningene (`awards/` for kåringen)
 - `src/admin/` – kontrollpanelet
 - `src/participant/` – mobilsiden (`/join`)

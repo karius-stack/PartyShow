@@ -4,8 +4,8 @@ import { useJoinUrl } from '../lib/joinUrl.ts';
 import { useAwards } from './context.ts';
 
 const IMAGE_STATUS: Record<Participant['imageStatus'], string> = {
-  pending: 'Lager AI-bilde …',
-  ready: 'AI-bilde klart',
+  pending: 'Fjerner bakgrunn …',
+  ready: 'Bakgrunn fjernet',
   failed: 'Bruker originalbildet',
 };
 
@@ -43,7 +43,7 @@ function ParticipantRow({ participant, done }: { participant: Participant; done:
         disabled={participant.imageStatus === 'pending'}
         onClick={() => send('participant:regenerateImage', participant.id)}
       >
-        Nytt AI-bilde
+        Fjern bakgrunn på nytt
       </button>
       <button
         className="btn btn-small btn-danger"
@@ -60,7 +60,7 @@ function ParticipantRow({ participant, done }: { participant: Participant; done:
 }
 
 export function ParticipantsPanel() {
-  const { state } = useAwards();
+  const { state, send } = useAwards();
   const joinUrl = useJoinUrl();
   const done = new Set(state.nominatedIds);
   const open = state.phase === 'registration';
@@ -81,11 +81,23 @@ export function ParticipantsPanel() {
       {state.participants.length === 0 ? (
         <p className="admin-hint">Ingen har registrert seg ennå.</p>
       ) : (
-        <ul className="admin-list">
-          {state.participants.map((p) => (
-            <ParticipantRow key={p.id} participant={p} done={done.has(p.id)} />
-          ))}
-        </ul>
+        <>
+          <ul className="admin-list">
+            {state.participants.map((p) => (
+              <ParticipantRow key={p.id} participant={p} done={done.has(p.id)} />
+            ))}
+          </ul>
+          <div className="admin-row">
+            <button
+              className="btn"
+              onClick={() => {
+                if (confirm('Fjerne bakgrunnen på nytt for alle deltakerne?')) void send('participant:regenerateAllImages');
+              }}
+            >
+              Fjern bakgrunn på nytt for alle
+            </button>
+          </div>
+        </>
       )}
     </div>
   );

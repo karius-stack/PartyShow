@@ -4,9 +4,9 @@ import path from 'node:path';
 import { completedVoters, countVotes, pickFinalists, pickWinners } from '../shared/awards.ts';
 import type { AwardCategory, AwardsState, Participant, ParticipantView } from '../shared/types.ts';
 import * as adb from './awardsDb.ts';
+import { cutOutPerson, ImageQueue } from './cutout.ts';
 import { setSortOrder, transaction, UPLOAD_DIR } from './db.ts';
 import { ShowError } from './errors.ts';
-import { ImageQueue, imageAiEnabled, stylizePortrait } from './imageAi.ts';
 import { cleanName, move } from './util.ts';
 
 const MAX_CATEGORY_LENGTH = 60;
@@ -169,18 +169,18 @@ export class AwardsController {
   }
 
   regenerateImage(id: number) {
-    this.findParticipant(id);
-    if (!imageAiEnabled()) throw new ShowError('OPENAI_API_KEY er ikke satt på serveren');
     this.queueImage(id);
+    this.changed();
+  }
+
+  /** Fjerner bakgrunnen på nytt for alle deltakerne. */
+  regenerateAllImages() {
+    for (const participant of adb.listParticipants(this.showId)) this.queueImage(participant.id);
     this.changed();
   }
 
   private queueImage(id: number) {
     const participant = this.findParticipant(id);
-    if (!imageAiEnabled()) {
-      adb.setParticipantImage(id, 'failed', participant.aiUrl);
-      return;
-    }
     adb.setParticipantImage(id, 'pending', participant.aiUrl);
     this.images.add(id);
   }
@@ -189,14 +189,13 @@ export class AwardsController {
     const participant = adb.listParticipants(this.showId).find((p) => p.id === id);
     if (!participant) return;
     try {
-      const fileName = path.basename(participant.originalUrl);
-      const result = await stylizePortrait(await readFile(path.join(UPLOAD_DIR, fileName)), fileName);
-      const aiName = `${randomUUID()}.png`;
-      await writeFile(path.join(UPLOAD_DIR, aiName), result);
-      adb.setParticipantImage(id, 'ready', `/uploads/${aiName}`);
+      const original = await readFile(path.join(UPLOAD_DIR, path.basename(participant.originalUrl)));
+      const cutoutName = `${randomUUID()}.png`;
+      await writeFile(path.join(UPLOAD_DIR, cutoutName), await cutOutPerson(original));
+      adb.setParticipantImage(id, 'ready', `/uploads/${cutoutName}`);
     } catch (error) {
-      console.error(`AI-bilde feilet for «${participant.name}»:`, error);
-      // Et tidligere vellykket AI-bilde beholdes.
+      console.error(`Bakgrunnsfjerning feilet for «${participant.name}»:`, error);
+      // Et tidligere vellykket utklipp beholdes.
       adb.setParticipantImage(id, 'failed', participant.aiUrl);
     }
     this.changed();

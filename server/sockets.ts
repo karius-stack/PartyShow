@@ -124,6 +124,7 @@ export function registerSockets(io: Server, app: AppController) {
     command(socket, 'participant:rename', (id, name) => awards.renameParticipant(id, name));
     command(socket, 'participant:remove', (id) => awards.removeParticipant(id));
     command(socket, 'participant:regenerateImage', (id) => awards.regenerateImage(id));
+    command(socket, 'participant:regenerateAllImages', () => awards.regenerateAllImages());
 
     command(socket, 'category:create', (title) => awards.createCategory(title));
     command(socket, 'category:rename', (id, title) => awards.renameCategory(id, title));

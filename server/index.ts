@@ -4,7 +4,7 @@ import express from 'express';
 import { Server } from 'socket.io';
 import { AppController } from './app.ts';
 import { UPLOAD_DIR } from './db.ts';
-import { imageAiEnabled } from './imageAi.ts';
+import { warmUpCutout } from './cutout.ts';
 import { registerSockets } from './sockets.ts';
 import { createApiRouter } from './uploads.ts';
 
@@ -31,5 +31,5 @@ registerSockets(io, controller);
 httpServer.listen(PORT, () => {
   console.log(`PartyShow-server kjører på http://localhost:${PORT}`);
   if (!process.env.ADMIN_PIN) console.warn('ADVARSEL: ADMIN_PIN er ikke satt – /admin er åpent for alle.');
-  if (!imageAiEnabled()) console.warn('OPENAI_API_KEY er ikke satt – kåringen bruker originalbildene uten AI-redigering.');
+  warmUpCutout();
 });
